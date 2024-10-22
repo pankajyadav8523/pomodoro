@@ -5,9 +5,9 @@ import ButtonGroup from "react-bootstrap/ButtonGroup";
 import Button from "react-bootstrap/Button";
 import "./App.css";
 
-const WORK_TIME = 10; // For testing, 10 seconds
-const SHORT_BREAK = 10; // For testing, 10 seconds
-const LONG_BREAK = 10; // For testing, 10 seconds
+const WORK_TIME = 10; // 10 seconds for testing
+const SHORT_BREAK = 3; // 10 seconds for testing
+const LONG_BREAK = 5; // 10 seconds for testing
 
 function App() {
   const [secondsLeft, setSecondsLeft] = useState(WORK_TIME);
@@ -24,6 +24,7 @@ function App() {
           if (prevSeconds === 0) {
             switchSession();
           } else {
+            updateTaskProgress(prevSeconds);
             return prevSeconds - 1;
           }
         });
@@ -34,7 +35,23 @@ function App() {
     return () => clearInterval(interval);
   }, [isRunning, secondsLeft, sessionType]);
 
-  // Session switch logic
+  const updateTaskProgress = (timeLeft) => {
+    if (sessionType === "work" && tasks.length > 0) {
+      const progressIncrement = ((WORK_TIME - timeLeft) / WORK_TIME) * 100;
+      setTasks((prevTasks) =>
+        prevTasks.map((task, index) => ({
+          ...task,
+          progress: progressIncrement,
+        }))
+      );
+    } else if (sessionType !== "work") {
+      // Reset progress during break
+      setTasks((prevTasks) =>
+        prevTasks.map((task) => ({ ...task, progress: 0 }))
+      );
+    }
+  };
+
   const switchSession = () => {
     if (sessionType === "work" && shortBreakTrack) {
       setSessionType("short-break");
@@ -53,12 +70,10 @@ function App() {
     }
   };
 
-  // Pause/resume functionality
   const handlePause = () => {
     setIsRunning(!isRunning);
   };
 
-  // Manual session switch
   const handleManualSwitch = (type) => {
     setSessionType(type);
     if (type === "work") {
@@ -70,9 +85,14 @@ function App() {
     }
   };
 
-  // Adding tasks to the task list
   const addTask = (task) => {
     setTasks((prevTasks) => [...prevTasks, { task, progress: 0 }]);
+  };
+
+  const deleteTask = (taskIndex) => {
+    setTasks((prevTasks) =>
+      prevTasks.filter((_, index) => index !== taskIndex)
+    );
   };
 
   return (
@@ -104,7 +124,7 @@ function App() {
         handlePause={handlePause}
         sessionType={sessionType}
       />
-      <TaskList tasks={tasks} addTask={addTask} />
+      <TaskList tasks={tasks} addTask={addTask} deleteTask={deleteTask} />
     </div>
   );
 }
