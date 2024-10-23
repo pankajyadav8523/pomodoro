@@ -5,9 +5,9 @@ import ButtonGroup from "react-bootstrap/ButtonGroup";
 import Button from "react-bootstrap/Button";
 import "./App.css";
 
-const WORK_TIME = 10; // 10 seconds for testing
-const SHORT_BREAK = 3; // 10 seconds for testing
-const LONG_BREAK = 5; // 10 seconds for testing
+const WORK_TIME = 15; // 10 seconds for testing
+const SHORT_BREAK = 5; // 10 seconds for testing
+const LONG_BREAK = 10; // 10 seconds for testing
 
 function App() {
   const [secondsLeft, setSecondsLeft] = useState(WORK_TIME);
@@ -24,7 +24,7 @@ function App() {
           if (prevSeconds === 0) {
             switchSession();
           } else {
-            updateTaskProgress(prevSeconds);
+            updateTaskProgress(prevSeconds - 1); // Pass the updated time left
             return prevSeconds - 1;
           }
         });
@@ -36,10 +36,17 @@ function App() {
   }, [isRunning, secondsLeft, sessionType]);
 
   const updateTaskProgress = (timeLeft) => {
-    if (sessionType === "work" && tasks.length > 0) {
-      const progressIncrement = ((WORK_TIME - timeLeft) / WORK_TIME) * 100;
+    // Ensure timeLeft and WORK_TIME are valid
+    if (
+      sessionType === "work" &&
+      tasks.length > 0 &&
+      WORK_TIME > 0 &&
+      timeLeft >= 0
+    ) {
+      const progressIncrement =
+        timeLeft === 0 ? 100 : ((WORK_TIME - timeLeft) / WORK_TIME) * 100;
       setTasks((prevTasks) =>
-        prevTasks.map((task, index) => ({
+        prevTasks.map((task) => ({
           ...task,
           progress: progressIncrement,
         }))
@@ -52,6 +59,7 @@ function App() {
     }
   };
 
+  // Switching session logic
   const switchSession = () => {
     if (sessionType === "work" && shortBreakTrack) {
       setSessionType("short-break");
@@ -69,12 +77,12 @@ function App() {
       setShortBreakTrack(true);
     }
   };
-
   const handlePause = () => {
     setIsRunning(!isRunning);
   };
 
   const handleManualSwitch = (type) => {
+    // Handle manual switch and set correct session time
     setSessionType(type);
     if (type === "work") {
       setSecondsLeft(WORK_TIME);
@@ -83,9 +91,11 @@ function App() {
     } else {
       setSecondsLeft(LONG_BREAK);
     }
+    setIsRunning(false); // Pause when switching manually
   };
 
   const addTask = (task) => {
+    // Reset progress for new task
     setTasks((prevTasks) => [...prevTasks, { task, progress: 0 }]);
   };
 

@@ -14,6 +14,7 @@ function TaskList({ tasks, addTask, deleteTask }) {
     }
   };
 
+  // Function to determine the color of the progress bar
   const getProgressVariant = (progress) => {
     if (progress < 50) return "success"; // Green
     if (progress < 80) return "warning"; // Orange
@@ -30,12 +31,18 @@ function TaskList({ tasks, addTask, deleteTask }) {
         >
           <div className="task-content flex-grow-1">
             <span className="task-name">{task.task}</span>
+
+            {/* ProgressBar with color only for the first task */}
             <ProgressBar
               now={task.progress}
               className="task-progress-bar"
-              variant={getProgressVariant(task.progress)}
+              variant={
+                index === 0 ? getProgressVariant(task.progress) : "transparent"
+              }
             />
           </div>
+
+          {/* Delete button */}
           <Button
             variant="danger"
             className="delete-task-btn ms-3"
@@ -45,6 +52,8 @@ function TaskList({ tasks, addTask, deleteTask }) {
           </Button>
         </div>
       ))}
+
+      {/* Input to add new tasks */}
       <Form.Control
         type="text"
         placeholder="Add a task"

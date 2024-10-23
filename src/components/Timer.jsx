@@ -4,6 +4,11 @@ import Card from "react-bootstrap/Card";
 
 function Timer({ secondsLeft, isRunning, handlePause, sessionType }) {
   const formatTime = (seconds) => {
+    // Handle invalid or NaN values by defaulting to 00:00
+    if (isNaN(seconds) || seconds === null || seconds < 0) {
+      return "00:00";
+    }
+
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins < 10 ? "0" : ""}${mins}:${secs < 10 ? "0" : ""}${secs}`;
