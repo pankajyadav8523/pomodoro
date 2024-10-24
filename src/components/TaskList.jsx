@@ -39,7 +39,6 @@ function TaskList({ tasks, addTask, deleteTask }) {
           >
             <div className="task-content flex-grow-1">
               <span className="task-name">{task.task}</span>
-
               {/* ProgressBar with color only for the first task */}
               <ProgressBar
                 now={task.progress}
@@ -51,7 +50,6 @@ function TaskList({ tasks, addTask, deleteTask }) {
                 }
               />
             </div>
-
             {/* Delete button */}
             <Button
               variant="danger"

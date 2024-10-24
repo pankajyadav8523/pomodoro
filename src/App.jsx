@@ -33,23 +33,33 @@ function App() {
   }, [isRunning, secondsLeft, sessionType]);
 
   const updateTaskProgress = (timeLeft) => {
-    // Ensure timeLeft and config.WORK_TIME are valid
-    if (
-      sessionType === "work" &&
-      tasks.length > 0 &&
-      config.WORK_TIME > 0 &&
-      timeLeft >= 0
-    ) {
+    if (sessionType === "work" && tasks.length > 0 && config.WORK_TIME > 0) {
       const progressIncrement =
         timeLeft === 0
           ? 100
           : ((config.WORK_TIME - timeLeft) / config.WORK_TIME) * 100;
-      setTasks((prevTasks) =>
-        prevTasks.map((task) => ({
-          ...task,
-          progress: progressIncrement,
-        }))
-      );
+
+      if (timeLeft === 0) {
+        // Move the current task to the back of the list and set the next task as current
+        setTasks((prevTasks) => {
+          const updatedTasks = [...prevTasks];
+          const completedTask = updatedTasks.shift(); // Remove the first task
+          updatedTasks.push(completedTask); // Push it to the end
+
+          // Reset progress for all tasks and make the next task active
+          return updatedTasks.map((task, index) => ({
+            ...task,
+            progress: index === 0 ? 0 : task.progress, // Reset progress of the new active task
+          }));
+        });
+      } else {
+        setTasks((prevTasks) =>
+          prevTasks.map((task, index) => ({
+            ...task,
+            progress: index === 0 ? progressIncrement : task.progress, // Update only the first task's progress
+          }))
+        );
+      }
     } else if (sessionType !== "work") {
       // Reset progress during break
       setTasks((prevTasks) =>
@@ -57,7 +67,7 @@ function App() {
       );
     }
   };
-
+  console.log(tasks);
   // Switching session logic
   const switchSession = () => {
     if (sessionType === "work" && shortBreakTrack) {
