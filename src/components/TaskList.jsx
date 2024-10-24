@@ -31,35 +31,38 @@ function TaskList({ tasks, addTask, deleteTask }) {
   return (
     <div>
       <h2>Tasks</h2>
-      {tasks.map((task, index) => (
-        <div
-          key={index}
-          className="task-item d-flex align-items-center justify-content-between mb-3"
-        >
-          <div className="task-content flex-grow-1">
-            <span className="task-name">{task.task}</span>
-
-            {/* ProgressBar with color only for the first task */}
-            <ProgressBar
-              now={task.progress}
-              className="task-progress-bar"
-              variant={
-                index === 0 ? getProgressVariant(task.progress) : "transparent"
-              }
-            />
-          </div>
-
-          {/* Delete button */}
-          <Button
-            variant="danger"
-            className="delete-task-btn ms-3"
-            onClick={() => deleteTask(index)}
+      <div className="scroll-container mb-2">
+        {tasks.map((task, index) => (
+          <div
+            key={index}
+            className="task-item d-flex align-items-center justify-content-between mb-3"
           >
-            ✕
-          </Button>
-        </div>
-      ))}
+            <div className="task-content flex-grow-1">
+              <span className="task-name">{task.task}</span>
 
+              {/* ProgressBar with color only for the first task */}
+              <ProgressBar
+                now={task.progress}
+                className="task-progress-bar"
+                variant={
+                  index === 0
+                    ? getProgressVariant(task.progress)
+                    : "transparent"
+                }
+              />
+            </div>
+
+            {/* Delete button */}
+            <Button
+              variant="danger"
+              className="delete-task-btn ms-3"
+              onClick={() => deleteTask(index)}
+            >
+              ✕
+            </Button>
+          </div>
+        ))}
+      </div>
       {/* Input to add new tasks */}
       <Form.Control
         type="text"
