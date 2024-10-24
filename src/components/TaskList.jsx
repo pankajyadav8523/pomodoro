@@ -14,6 +14,13 @@ function TaskList({ tasks, addTask, deleteTask }) {
     }
   };
 
+  // Function to handle "Enter" key press for adding task
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      handleAddTask();
+    }
+  };
+
   // Function to determine the color of the progress bar
   const getProgressVariant = (progress) => {
     if (progress < 50) return "success"; // Green
@@ -60,6 +67,7 @@ function TaskList({ tasks, addTask, deleteTask }) {
         value={newTask}
         onChange={(e) => setNewTask(e.target.value)}
         className="mb-2"
+        onKeyDown={handleKeyPress}
       />
       <Button variant="success" onClick={handleAddTask}>
         + Add Task

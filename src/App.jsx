@@ -4,16 +4,13 @@ import TaskList from "./components/TaskList";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 import Button from "react-bootstrap/Button";
 import "./App.css";
-
-const WORK_TIME = 15; // 10 seconds for testing
-const SHORT_BREAK = 5; // 10 seconds for testing
-const LONG_BREAK = 10; // 10 seconds for testing
+import config from "./config";
 
 function App() {
-  const [secondsLeft, setSecondsLeft] = useState(WORK_TIME);
+  const [secondsLeft, setSecondsLeft] = useState(config.WORK_TIME);
   const [isRunning, setIsRunning] = useState(false);
   const [sessionType, setSessionType] = useState("work");
-  const [tasks, setTasks] = useState([]);
+  const [tasks, setTasks] = useState(config.tasks);
   const [shortBreakTrack, setShortBreakTrack] = useState(true);
 
   useEffect(() => {
@@ -36,15 +33,17 @@ function App() {
   }, [isRunning, secondsLeft, sessionType]);
 
   const updateTaskProgress = (timeLeft) => {
-    // Ensure timeLeft and WORK_TIME are valid
+    // Ensure timeLeft and config.WORK_TIME are valid
     if (
       sessionType === "work" &&
       tasks.length > 0 &&
-      WORK_TIME > 0 &&
+      config.WORK_TIME > 0 &&
       timeLeft >= 0
     ) {
       const progressIncrement =
-        timeLeft === 0 ? 100 : ((WORK_TIME - timeLeft) / WORK_TIME) * 100;
+        timeLeft === 0
+          ? 100
+          : ((config.WORK_TIME - timeLeft) / config.WORK_TIME) * 100;
       setTasks((prevTasks) =>
         prevTasks.map((task) => ({
           ...task,
@@ -63,17 +62,17 @@ function App() {
   const switchSession = () => {
     if (sessionType === "work" && shortBreakTrack) {
       setSessionType("short-break");
-      setSecondsLeft(SHORT_BREAK);
+      setSecondsLeft(config.SHORT_BREAK);
       setShortBreakTrack(false);
     } else if (sessionType === "short-break") {
       setSessionType("work");
-      setSecondsLeft(WORK_TIME);
+      setSecondsLeft(config.WORK_TIME);
     } else if (sessionType === "long-break") {
       setSessionType("work");
-      setSecondsLeft(WORK_TIME);
+      setSecondsLeft(config.WORK_TIME);
     } else {
       setSessionType("long-break");
-      setSecondsLeft(LONG_BREAK);
+      setSecondsLeft(config.LONG_BREAK);
       setShortBreakTrack(true);
     }
   };
@@ -85,9 +84,9 @@ function App() {
     // Handle manual switch and set correct session time
     setSessionType(type);
     if (type === "work") {
-      setSecondsLeft(WORK_TIME);
+      setSecondsLeft(config.WORK_TIME);
     } else if (type === "short-break") {
-      setSecondsLeft(SHORT_BREAK);
+      setSecondsLeft(config.SHORT_BREAK);
     } else {
       setSecondsLeft(LONG_BREAK);
     }
