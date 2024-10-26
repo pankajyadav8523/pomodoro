@@ -2,15 +2,24 @@ import React from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import ProgressBar from "react-bootstrap/ProgressBar";
+import Alert from "react-bootstrap/Alert"; // Import for pop-up notification
 import "./TaskList.css";
 
 function TaskList({ tasks, addTask, deleteTask }) {
   const [newTask, setNewTask] = React.useState("");
+  const [showPopup, setShowPopup] = React.useState(false); // State to handle the pop-up
 
+  // Function to handle adding a new task
   const handleAddTask = () => {
     if (newTask.trim() !== "") {
       addTask(newTask);
       setNewTask("");
+      setShowPopup(true); // Show the pop-up when task is added
+
+      // Hide the pop-up after 2 seconds
+      setTimeout(() => {
+        setShowPopup(false);
+      }, 2000);
     }
   };
 
@@ -61,6 +70,14 @@ function TaskList({ tasks, addTask, deleteTask }) {
           </div>
         ))}
       </div>
+
+      {/* Pop-up for confirming task added */}
+      {showPopup && (
+        <Alert variant="success" className="task-added-popup">
+          Task added! Check the bottom of the list.
+        </Alert>
+      )}
+
       {/* Input to add new tasks */}
       <Form.Control
         type="text"

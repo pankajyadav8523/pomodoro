@@ -40,18 +40,28 @@ function App() {
           : ((config.WORK_TIME - timeLeft) / config.WORK_TIME) * 100;
 
       if (timeLeft === 0) {
-        // Move the current task to the back of the list and set the next task as current
-        setTasks((prevTasks) => {
-          const updatedTasks = [...prevTasks];
-          const completedTask = updatedTasks.shift(); // Remove the first task
-          updatedTasks.push(completedTask); // Push it to the end
-
-          // Reset progress for all tasks and make the next task active
-          return updatedTasks.map((task, index) => ({
+        // Ensure progress hits 100% when time is up
+        setTasks((prevTasks) =>
+          prevTasks.map((task, index) => ({
             ...task,
-            progress: index === 0 ? 0 : task.progress, // Reset progress of the new active task
-          }));
-        });
+            progress: index === 0 ? 100 : task.progress, // Ensure the current task's progress is 100%
+          }))
+        );
+
+        // Move the current task to the back of the list and reset progress for the next task
+        setTimeout(() => {
+          setTasks((prevTasks) => {
+            const updatedTasks = [...prevTasks];
+            const completedTask = updatedTasks.shift(); // Remove the first task
+            updatedTasks.push(completedTask); // Push it to the end
+
+            // Reset progress for all tasks and make the next task active
+            return updatedTasks.map((task, index) => ({
+              ...task,
+              progress: index === 0 ? 0 : task.progress, // Reset progress for the new active task
+            }));
+          });
+        }, 500); // Small delay to visually complete the progress fill before task switches
       } else {
         setTasks((prevTasks) =>
           prevTasks.map((task, index) => ({
@@ -68,6 +78,7 @@ function App() {
     }
   };
   console.log(tasks);
+
   // Switching session logic
   const switchSession = () => {
     if (sessionType === "work" && shortBreakTrack) {
