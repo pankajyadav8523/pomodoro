@@ -2,35 +2,32 @@ import React from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import ProgressBar from "react-bootstrap/ProgressBar";
-import Alert from "react-bootstrap/Alert"; // Import for pop-up notification
+import Alert from "react-bootstrap/Alert";
 import "./TaskList.css";
 
 function TaskList({ tasks, addTask, deleteTask }) {
   const [newTask, setNewTask] = React.useState("");
-  const [showPopup, setShowPopup] = React.useState(false); // State to handle the pop-up
+  const [showPopup, setShowPopup] = React.useState(false);
 
   // Function to handle adding a new task
   const handleAddTask = () => {
     if (newTask.trim() !== "") {
       addTask(newTask);
       setNewTask("");
-      setShowPopup(true); // Show the pop-up when task is added
+      setShowPopup(true);
 
-      // Hide the pop-up after 2 seconds
       setTimeout(() => {
         setShowPopup(false);
       }, 2000);
     }
   };
 
-  // Function to handle "Enter" key press for adding task
   const handleKeyPress = (e) => {
     if (e.key === "Enter") {
       handleAddTask();
     }
   };
 
-  // Function to determine the color of the progress bar
   const getProgressVariant = (progress) => {
     if (progress < 50) return "success"; // Green
     if (progress < 80) return "warning"; // Orange
@@ -48,7 +45,7 @@ function TaskList({ tasks, addTask, deleteTask }) {
           >
             <div className="task-content flex-grow-1">
               <span className="task-name">{task.task}</span>
-              {/* ProgressBar with color only for the first task */}
+
               <ProgressBar
                 now={task.progress}
                 className="task-progress-bar"
@@ -59,7 +56,7 @@ function TaskList({ tasks, addTask, deleteTask }) {
                 }
               />
             </div>
-            {/* Delete button */}
+
             <Button
               variant="danger"
               className="delete-task-btn ms-3"
@@ -71,14 +68,12 @@ function TaskList({ tasks, addTask, deleteTask }) {
         ))}
       </div>
 
-      {/* Pop-up for confirming task added */}
       {showPopup && (
         <Alert variant="success" className="task-added-popup">
           Task added! Check the bottom of the list.
         </Alert>
       )}
 
-      {/* Input to add new tasks */}
       <Form.Control
         type="text"
         placeholder="Add a task"
