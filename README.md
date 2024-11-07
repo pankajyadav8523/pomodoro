@@ -10,6 +10,7 @@ Work Session → Short Break
 Short Break → Work Session
 After multiple Work Sessions → Long Break
 Long Break → Work Session
+![image](https://github.com/user-attachments/assets/a184a1ce-26fe-4a53-a871-603d4529efaf)
 
 ## Deployed Application
 You can try the live version of the Pomodoro Timer Widget by visiting this link: https://pankajyadav8523.github.io/pomodoro/
